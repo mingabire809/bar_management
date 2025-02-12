@@ -10,6 +10,7 @@ try {
     $poste = $_POST['poste'];
     $salaire = $_POST['salaire'];
     $date_embauche = $_POST['date_embauche'];
+    $numero_serveur = $_POST['numero_serveur'];
 
    
     if (empty($nom) || empty($prenom) || empty($poste) || empty($salaire)  || empty($date_embauche)) {
@@ -21,11 +22,11 @@ try {
     }
 
    
-    $stmt = $conn->prepare("INSERT INTO gestion_employes (nom, prenom, poste, salaire, date_embauche) VALUES (?, ?, ?, ?, ?)");
+    $stmt = $conn->prepare("INSERT INTO gestion_employes (nom, prenom, poste, salaire, date_embauche, numero_serveur) VALUES (?, ?, ?, ?, ?, ?)");
     
     
 
-    $stmt->execute([$nom, $prenom, $poste, $salaire, $date_embauche]);
+    $stmt->execute([$nom, $prenom, $poste, $salaire, $date_embauche, $numero_serveur]);
 
 
     echo json_encode([

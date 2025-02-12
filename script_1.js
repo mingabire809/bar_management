@@ -67,7 +67,8 @@ document.addEventListener('DOMContentLoaded', function() {
         "columns": [
             { "data": "nom" },  
             { "data": "prenom" },
-            { "data": "poste" }, 
+            { "data": "poste" },
+            { "data": "numero_serveur" }, 
             { 
                 "data": null,  
                 "render": function(data, type, row) {
@@ -192,6 +193,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     $('#prenom-update').val(response.data.prenom);
                     $('#poste-update').val(response.data.poste);
                     $('#salaire-update').val(response.data.salaire);
+                    $('#numero_serveur-update').val(response.data.numero_serveur)
                     $('#date_embauche-update').val(response.data.date_embauche);
                     
                     // Store stockId in the form for updating
@@ -266,6 +268,7 @@ document.addEventListener('DOMContentLoaded', function() {
             prenom: $('#prenom-update').val(),
             poste: $('#poste-update').val(),
             salaire: $('#salaire-update').val(),
+            numero_serveur: $('#numero_serveur-update').val(),
             date_embauche: $('#date_embauche-update').val()
         };
 

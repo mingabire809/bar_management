@@ -15,6 +15,7 @@ try {
     $prenom = $_POST['prenom'];
     $poste = $_POST['poste'];
     $salaire = $_POST['salaire'];
+    $numero_serveur = $_POST['numero_serveur'];
     $date_embauche = $_POST['date_embauche'];
 
     // Validate input
@@ -26,9 +27,12 @@ try {
         throw new Exception("Salaire invalide");
     }
 
+    $numero_serveur = !empty($numero_serveur) ? $numero_serveur : null;
+
+
     // Prepare update query
-    $stmt = $conn->prepare("UPDATE gestion_employes SET nom = ?, prenom = ?, poste = ?, salaire = ?, date_embauche = ? WHERE id = ?");
-    $stmt->execute([$nom, $prenom, $poste, $salaire, $date_embauche, $id]);
+    $stmt = $conn->prepare("UPDATE gestion_employes SET nom = ?, prenom = ?, poste = ?, salaire = ?, numero_serveur = ?, date_embauche = ? WHERE id = ?");
+    $stmt->execute([$nom, $prenom, $poste, $salaire, $numero_serveur, $date_embauche, $id]);
 
     echo json_encode([
         'success' => true,

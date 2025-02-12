@@ -11,7 +11,7 @@ try {
     $employeeId = $_GET['id'];
 
     // Prepare and execute the query
-    $stmt = $conn->prepare("SELECT id, nom, prenom, poste, salaire, date_embauche FROM gestion_employes WHERE id = ?");
+    $stmt = $conn->prepare("SELECT id, nom, prenom, poste, salaire, numero_serveur, date_embauche FROM gestion_employes WHERE id = ?");
     $stmt->execute([$employeeId]);
 
     $employee = $stmt->fetch(PDO::FETCH_ASSOC);

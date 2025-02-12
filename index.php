@@ -307,6 +307,11 @@
     </div>
 
     <div class="form-group">
+        <label for="item-price">Numero du serveur:</label>
+        <input type="number" id="numero_serveur" name="numero_serveur">
+    </div>
+
+    <div class="form-group">
         <label for="item-name">Date d'embauche:</label>
         <input type="date" id="date_embauche" name="date_embauche" required>
     </div>
@@ -351,6 +356,11 @@
     </div>
 
     <div class="form-group">
+        <label for="item-price">Numero du serveur:</label>
+        <input type="number" id="numero_serveur-update" name="numero_serveur">
+    </div>
+
+    <div class="form-group">
         <label for="item-name">Date d'embauche:</label>
         <input type="date" id="date_embauche-update" name="date_embauche" required>
     </div>
@@ -369,6 +379,7 @@
                 <th>Nom</th>
                 <th>Prenom</th>
                 <th>Poste</th>
+                <th>Numero du serveur</th>
                 <th>Action</th>
             </tr>
         </thead>
