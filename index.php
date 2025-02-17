@@ -196,7 +196,7 @@
             
             
 
-            <form id="stock-form" method="POST">
+            <form id="stock-form" method="POST" enctype="multipart/form-data">
     
     
     <div class="form-group">
@@ -214,6 +214,14 @@
         <input type="number" step="0.01" id="item-price" name="price" required>
     </div>
 
+    <div class="form-group">
+                <label for="ingredient-picture">Image de la boisson: </label>
+                <input type="file" id="boisson-picture" name="picture" accept="image/*">
+            </div>
+
+            <div class="form-group">
+                <img id="image-preview" src="" alt="Aperçu de l'image" style="max-width: 100px; display: none;">
+            </div>
 
     <button type="submit" class="submit-btn">Ajouter produit</button>
 </form>
@@ -224,6 +232,7 @@
     <table id="stock-table" class="display">
         <thead>
             <tr>
+                <th></th>
                 <th>Nom</th>
                 <th>Quantité</th>
                 <th>Prix d'achat</th>
@@ -241,7 +250,7 @@
         <span class="close">&times;</span>
         <h2>Modifier le produit</h2>
 
-        <form id="stock-form-update" method="POST">
+        <form id="stock-form-update" method="POST" enctype="multipart/form-data">
             <div class="form-group">
                 <label for="item-name">Nom:</label>
                 <input type="text" id="item-name-update" name="name" required>
@@ -255,6 +264,21 @@
             <div class="form-group">
                 <label for="item-price">Prix d'achat:</label>
                 <input type="number" step="0.01" id="item-price-update" name="price" required>
+            </div>
+
+            <div class="form-group">
+                <label>Image Actuelle:</label>
+                <img id="current-image-preview-boisson" src="" alt="Aucune image" style="max-width: 200px; display: block; margin-top: 10px;">
+            </div>
+
+            <!-- File Input for New Image -->
+            <div class="form-group">
+                <label for="boisson-picture-update">Changer l'image:</label>
+                <input type="file" id="boisson-picture-update" name="picture" accept="image/*">
+            </div>
+
+            <div class="form-group">
+                <img id="image-preview-update-boisson" src="" alt="Aperçu de l'image" style="max-width: 100px; display: none;">
             </div>
 
             <button type="submit" class="submit-btn">Mettre à jour</button>
@@ -286,6 +310,7 @@
     <table id="stock-kitchen-table" class="display">
         <thead>
             <tr>
+                <th></th>
                 <th>Nom du plat</th>
                 <th>Prix d'achat</th>
                 <th>Categorie</th>
@@ -341,7 +366,7 @@
         <span class="close" id="close-stock-kitchen-modal">&times;</span>
         <h2>Ajouter au stock de cuisine</h2>
 
-        <form id="stock-kitchen-form" method="POST">
+        <form id="stock-kitchen-form" method="POST" enctype="multipart/form-data">
             <!-- Category Selection -->
             <div class="form-group">
                 <label for="category">Catégorie:</label>
@@ -371,6 +396,15 @@
                 <input type="number" step="0.01" id="ingredient-price" name="prix_achat" required>
             </div>
 
+            <div class="form-group">
+                <label for="ingredient-picture">Image du produit:</label>
+                <input type="file" id="ingredient-picture" name="picture" accept="image/*">
+            </div>
+
+            <div class="form-group">
+                <img id="image-preview" src="" alt="Aperçu de l'image" style="max-width: 100px; display: none;">
+            </div>
+
 
             <button type="submit" class="submit-btn">Ajouter au stock</button>
         </form>
@@ -385,7 +419,7 @@
         <span class="close" id="close-stock-kitchen-modal">&times;</span>
         <h2 id="modal-title">Ajouter au stock de cuisine</h2>
 
-        <form id="stock-kitchen-form-update" method="POST">
+        <form id="stock-kitchen-form-update" method="POST" enctype="multipart/form-data">
             <div class="form-group">
                 <label for="category">Catégorie:</label>
                 <select id="category-update" name="cuisine_categorie_id" required>
@@ -416,6 +450,21 @@
                 <option value="1">Disponible</option>
                 <option value="0">Non-disponible</option>
             </select>
+            </div>
+
+            <div class="form-group">
+                <label>Image Actuelle:</label>
+                <img id="current-image-preview" src="" alt="Aucune image" style="max-width: 200px; display: block; margin-top: 10px;">
+            </div>
+
+            <!-- File Input for New Image -->
+            <div class="form-group">
+                <label for="ingredient-picture-update">Changer l'image:</label>
+                <input type="file" id="ingredient-picture-update" name="picture" accept="image/*">
+            </div>
+
+            <div class="form-group">
+                <img id="image-preview-update" src="" alt="Aperçu de l'image" style="max-width: 100px; display: none;">
             </div>
 
             <input type="hidden" id="item-id" name="id">

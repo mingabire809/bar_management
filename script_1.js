@@ -46,6 +46,16 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         },
         "columns": [
+            { 
+                "data": "picture",
+                "render": function(data, type, row) {
+                    console.log(data)
+                    return data 
+                        ? `<img src="pictures/${data}" alt="Produit" style="max-width: 50px; height: auto;">`
+                        : 'Aucune image';
+                },
+                "orderable": false
+            },
             { "data": "nom_boisson" },  
             { "data": "quantite_stock" },
             { "data": "prix_achat" }, 
@@ -161,6 +171,16 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         },
         "columns": [
+            { 
+                "data": "picture",
+                "render": function(data, type, row) {
+                    console.log(data)
+                    return data 
+                        ? `<img src="pictures/${data}" alt="Produit" style="max-width: 50px; height: auto;">`
+                        : 'Aucune image';
+                },
+                "orderable": false
+            },
             { "data": "nom_ingredient" },
             { "data": "prix_achat" },
             { "data": "cuisine_categorie" },
@@ -260,6 +280,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
                     // Show the modal
                     $('#stock-modal-update').show();
+
+                    if (response.data.picture) {
+                        $('#current-image-preview-boisson').attr('src', `pictures/${response.data.picture}`).show();
+                    } else {
+                        $('#current-image-preview-boisson').attr('src', '').hide();
+                    }
                 } else {
                     alert('Failed to fetch stock details.');
                 }
@@ -419,7 +445,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
                     // Load Categories
                     $.ajax({
-                        url: 'get_all_categories.php',
+                        url: 'php/get_all_categories.php',
                         type: 'GET',
                         dataType: 'json',
                         success: function(catResponse) {
@@ -439,6 +465,12 @@ document.addEventListener('DOMContentLoaded', function() {
                             }
                         }
                     });
+
+                    if (item.picture) {
+                        $('#current-image-preview').attr('src', `pictures/${item.picture}`).show();
+                    } else {
+                        $('#current-image-preview').attr('src', '').hide();
+                    }
                 } else {
                     alert("Erreur lors de la récupération des détails.");
                 }
@@ -536,7 +568,7 @@ document.addEventListener('DOMContentLoaded', function() {
         };
 
         $.ajax({
-            url: 'save_attendance.php', // PHP script to save attendance data
+            url: 'php/save_attendance.php', // PHP script to save attendance data
             method: 'POST',
             data: dataToSend,
             success: function(response) {
@@ -606,7 +638,7 @@ document.getElementById('view-attendance-btn').addEventListener('click', () => {
     }
 
     // Make an AJAX request to fetch attendance data for the selected date
-    fetch(`get_attendance.php?date=${selectedDate}`)
+    fetch(`php/get_attendance.php?date=${selectedDate}`)
         .then(response => response.json())
         .then(data => {
             if (data.success) {
@@ -666,23 +698,34 @@ document.getElementById('view-attendance-btn').addEventListener('click', () => {
         e.preventDefault();
 
         let stockId = $(this).data('id');
-        let formData = {
-            id: stockId,
-            name: $('#item-name-update').val(),
-            quantity: $('#item-quantity-update').val(),
-            price: $('#item-price-update').val()
-        };
+        let formData = new FormData(this);
+        
+    formData.append('id', stockId);
+    formData.append('name', $('#item-name-update').val());
+    formData.append('quantity', $('#item-quantity-update').val());
+    formData.append('price', $('#item-price-update').val());
+
+    // Append the picture file
+    let pictureFile = $('#boisson-picture-update')[0].files[0];
+    if (pictureFile) {
+        formData.append('picture', pictureFile);
+    }
+
 
         $.ajax({
             url: 'php/update_stock.php', // Create this PHP file to handle updates
             type: 'POST',
             data: formData,
+            processData: false, // Important: Prevents jQuery from processing FormData
+            contentType: false,
             dataType: 'json',
             success: function(response) {
                 if (response.success) {
                     alert(response.message);
                     $('#stock-modal-update').hide();
                     stockTable.ajax.reload();
+                    document.getElementById('stock-form-update').reset();
+                    document.getElementById('image-preview-update-boisson').style.display = 'none';
                 } else {
                     alert('Error: ' + response.message);
                 }
@@ -692,6 +735,18 @@ document.getElementById('view-attendance-btn').addEventListener('click', () => {
                 alert('Failed to update stock.');
             }
         });
+    });
+
+    document.getElementById('boisson-picture-update').addEventListener('change', function(event) {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('image-preview-update-boisson').src = e.target.result;
+                document.getElementById('image-preview-update-boisson').style.display = 'block';
+            };
+            reader.readAsDataURL(file);
+        }
     });
 
 
@@ -766,23 +821,33 @@ document.getElementById('view-attendance-btn').addEventListener('click', () => {
 
     $('#stock-kitchen-form-update').on('submit', function(e) {
         e.preventDefault();
+        let formData = new FormData(this);
+        formData.append('id', $('#item-id').val());
+        formData.append('nom_ingredient', $('#ingredient-name-update').val());
+        formData.append('prix_achat', $('#ingredient-price-update').val());
+        formData.append('cuisine_categorie_id', $('#category-update').val());
+        formData.append('sous_categorie_id', $('#sub-category-update').val());
+        formData.append('disponible', $('#availability').val());
+    
+        // Append the picture file
+        let pictureFile = $('#ingredient-picture-update')[0].files[0];
+        if (pictureFile) {
+            formData.append('picture', pictureFile);
+        }
     
         $.ajax({
             url: 'php/update_stock_kitchen.php',
             type: 'POST',
-            data: {
-                id: $('#item-id').val(),
-                nom_ingredient: $('#ingredient-name-update').val(),
-                prix_achat: $('#ingredient-price-update').val(),
-                cuisine_categorie_id: $('#category-update').val(),
-                sous_categorie_id: $('#sub-category-update').val(),
-                disponible: $('#availability').val() // Add this field
-            },
+            data: formData,
+            processData: false, // Important: Prevents jQuery from processing FormData
+            contentType: false,
             dataType: 'json',
             success: function(response) {
                 if (response.success) {
                     alert('Mise à jour réussie!');
                     $('#stock-kitchen-modal-update').hide();
+                    document.getElementById('stock-kitchen-form-update').reset();
+                    document.getElementById('image-preview-update').style.display = 'none';
                     stockKitchenTable.ajax.reload();
                 } else {
                     alert('Échec de la mise à jour.');
@@ -793,6 +858,21 @@ document.getElementById('view-attendance-btn').addEventListener('click', () => {
             }
         });
     });
+
+
+    document.getElementById('ingredient-picture-update').addEventListener('change', function(event) {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('image-preview-update').src = e.target.result;
+                document.getElementById('image-preview-update').style.display = 'block';
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+
+    
 
 
 
@@ -891,6 +971,18 @@ document.getElementById('view-attendance-btn').addEventListener('click', () => {
             alert('An error occurred while adding the stock.');
         });
     }
+
+    document.getElementById('boisson-picture').addEventListener('change', function(event) {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('image-preview').src = e.target.result;
+                document.getElementById('image-preview').style.display = 'block';
+            };
+            reader.readAsDataURL(file);
+        }
+    });
 
 
 
@@ -1032,7 +1124,7 @@ document.getElementById('view-attendance-btn').addEventListener('click', () => {
 
     
     document.getElementById('stock-kitchen-form').onsubmit = function(e) {
-        e.preventDefault(); // Prevent the form from submitting the usual way
+        e.preventDefault(); // Prevent default form submission
     
         const formData = new FormData(this); // Get form data
     
@@ -1040,25 +1132,43 @@ document.getElementById('view-attendance-btn').addEventListener('click', () => {
             method: 'POST',
             body: formData
         })
-        .then(response => response.json()) // Parse the response as JSON
+        .then(response => response.json()) // Parse response as JSON
         .then(data => {
             console.log(data); // Log the response for debugging
     
             if (data.success) {
                 alert('Produit ajouté au stock de cuisine avec succès!');
-                // Optionally close the modal and reset the form
                 document.getElementById('stock-kitchen-form').reset();
-                document.getElementById('stock-kitchen-modal').style.display = 'none'; // Close the modal
+                document.getElementById('stock-kitchen-modal').style.display = 'none'; // Close modal
                 stockKitchenTable.ajax.reload();
+    
+                // Update image preview
+                if (data.picture) {
+                    document.getElementById('image-preview').src = data.picture;
+                    document.getElementById('image-preview').style.display = 'block';
+                }
             } else {
-                alert('Erreur: ' + data.message); // Show an error message if something went wrong
+                alert('Erreur: ' + data.message);
             }
         })
         .catch(error => {
-            console.error('Error:', error); // Log any errors
+            console.error('Error:', error);
             alert('Une erreur est survenue lors de l\'ajout du produit.');
         });
     };
+    
+    // Handle image preview before upload
+    document.getElementById('ingredient-picture').addEventListener('change', function(event) {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('image-preview').src = e.target.result;
+                document.getElementById('image-preview').style.display = 'block';
+            };
+            reader.readAsDataURL(file);
+        }
+    });
     
     // Open the modal
     document.getElementById('add-stock-kitchen-btn').onclick = function() {

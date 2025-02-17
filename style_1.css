@@ -24,6 +24,7 @@
     height: 100%;
     background-color: rgba(0, 0, 0, 0.5);
     z-index: 1000;
+    overflow-y: scroll;
 }
 
 .modal-content {
@@ -210,7 +211,7 @@
 
 
 #stock-kitchen-table {
-    width: 90% !important;
+    width: 95% !important;
     table-layout: fixed; /* Ensures that the table width is distributed evenly */
 }
 

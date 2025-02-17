@@ -19,7 +19,8 @@ if ($id <= 0) {
 $sql = "SELECT 
     gsk.id, 
     gsk.nom_ingredient, 
-    gsk.prix_achat, 
+    gsk.prix_achat,
+    gsk.picture, 
     cc.id AS cuisine_categorie_id, 
     cc.name AS cuisine_categorie, 
     sc.id AS sous_categorie_id, 

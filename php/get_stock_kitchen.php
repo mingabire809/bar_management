@@ -27,7 +27,7 @@ $columns = ['nom_ingredient', 'prix_achat', 'disponible', 'nom_categorie', 'nom_
 $orderColumnName = isset($columns[$orderColumn]) ? $columns[$orderColumn] : 'nom_ingredient';
 
 // Construct the SQL query with JOINs to get category names
-$sql = "SELECT gsk.id, gsk.nom_ingredient, gsk.prix_achat, 
+$sql = "SELECT gsk.id, gsk.nom_ingredient, gsk.prix_achat, gsk.picture, 
                cc.name AS cuisine_categorie, 
                sc.name AS sous_categorie,
                CASE 

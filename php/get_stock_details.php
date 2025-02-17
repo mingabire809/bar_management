@@ -11,7 +11,7 @@ try {
     $stockId = $_GET['id'];
 
     // Prepare and execute the query
-    $stmt = $conn->prepare("SELECT id, nom_boisson, quantite_stock, prix_achat FROM gestion_stock_boisson WHERE id = ?");
+    $stmt = $conn->prepare("SELECT id, nom_boisson, quantite_stock, prix_achat, picture FROM gestion_stock_boisson WHERE id = ?");
     $stmt->execute([$stockId]);
 
     $stock = $stmt->fetch(PDO::FETCH_ASSOC);

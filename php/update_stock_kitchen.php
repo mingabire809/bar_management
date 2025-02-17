@@ -2,27 +2,20 @@
 header('Content-Type: application/json');
 
 try {
-    try {
-        $pdo = new PDO('mysql:host=localhost;dbname=g_bar', 'root', 'password');
-        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    } catch (PDOException $e) {
-        die("Connection failed: " . $e->getMessage());
-    }
+    $pdo = new PDO('mysql:host=localhost;dbname=g_bar', 'root', 'password');
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-    // Validate request method
     if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
         throw new Exception("Invalid request method");
     }
 
-    // Get input data
     $id = $_POST['id'];
     $nom_ingredient = $_POST['nom_ingredient'];
     $prix_achat = $_POST['prix_achat'];
     $cuisine_categorie_id = $_POST['cuisine_categorie_id'];
     $sous_categorie_id = $_POST['sous_categorie_id'];
-    $disponible = $_POST['disponible'];
+    $disponible = isset($_POST['disponible']) ? (int)$_POST['disponible'] : 0;
 
-    // Validate input
     if (empty($id) || empty($nom_ingredient) || empty($prix_achat) || empty($cuisine_categorie_id) || empty($sous_categorie_id)) {
         throw new Exception("All fields except 'disponible' are required");
     }
@@ -31,22 +24,36 @@ try {
         throw new Exception("Invalid price value");
     }
 
-    // Convert "1" or "0" from dropdown to an integer
-    $disponible = ($disponible == '1') ? 1 : 0;
+    // Handle file upload
+    if (isset($_FILES['picture']) && $_FILES['picture']['error'] === UPLOAD_ERR_OK) {
+        error_log(print_r($_FILES, true));
 
-    // Prepare update query
-    $stmt = $pdo->prepare("UPDATE gestion_stock_kitchen SET nom_ingredient = ?, prix_achat = ?, cuisine_categorie_id = ?, sous_categorie_id = ?, disponible = ? WHERE id = ?");
-    $stmt->execute([$nom_ingredient, $prix_achat, $cuisine_categorie_id, $sous_categorie_id, $disponible, $id]);
+        $upload_dir = __DIR__ . "/../pictures/"; // Make sure the "pictures" directory exists
+        if (!is_dir($upload_dir)) {
+            mkdir($upload_dir, 0777, true);
+        }
 
-    echo json_encode([
-        'success' => true,
-        'message' => 'Stock updated successfully'
-    ]);
+        $fileTmpPath = $_FILES['picture']['tmp_name'];
+        $fileName = time() . '_' . $_FILES['picture']['name'];
+        $filePath = $upload_dir . $fileName;
+
+        if (move_uploaded_file($fileTmpPath, $filePath)) {
+            // Update the picture in the database
+            $stmt = $pdo->prepare("UPDATE gestion_stock_kitchen SET nom_ingredient = ?, prix_achat = ?, cuisine_categorie_id = ?, sous_categorie_id = ?, disponible = ?, picture = ? WHERE id = ?");
+            $stmt->execute([$nom_ingredient, $prix_achat, $cuisine_categorie_id, $sous_categorie_id, $disponible, $fileName, $id]);
+        } else {
+            throw new Exception("File upload failed.");
+        }
+    } else {
+        // Update without changing the picture
+        $stmt = $pdo->prepare("UPDATE gestion_stock_kitchen SET nom_ingredient = ?, prix_achat = ?, cuisine_categorie_id = ?, sous_categorie_id = ?, disponible = ? WHERE id = ?");
+        $stmt->execute([$nom_ingredient, $prix_achat, $cuisine_categorie_id, $sous_categorie_id, $disponible, $id]);
+    }
+
+    echo json_encode(['success' => true, 'message' => 'Stock updated successfully']);
 
 } catch (Exception $e) {
-    echo json_encode([
-        'success' => false,
-        'message' => $e->getMessage()
-    ]);
+    echo json_encode(['success' => false, 'message' => $e->getMessage()]);
 }
+
 ?>
